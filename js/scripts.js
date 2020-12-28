@@ -10,7 +10,7 @@ function fetchData(url) {
 }
 
 //Loops through the results array and usees template literals to populate the employees personal information. The callback (constructModalWindow()) is triggered by the cards click event listener.
-function constructCard(data, cb){
+function constructCard(data){
     for(let i = 0; i < data.length; i++){
         const template = `<div class="card">
         <div class="card-img-container">
@@ -22,11 +22,10 @@ function constructCard(data, cb){
             <p class="card-text cap">${data[i].location.city}, ${data[i].location.state}</p>
         </div>
         </div>`
-
-        gallery.insertAdjacentHTML('beforeend', template);
-        let card = document.querySelectorAll('.card')
+        gallerySection.insertAdjacentHTML('beforeend', template)
+        const card = document.querySelectorAll('.card')
         card[i].addEventListener('click', () => {
-            cb(data);
+            constructModalWindow(data);
         })
     }
  }
@@ -34,7 +33,8 @@ function constructCard(data, cb){
  //Loops through the data to check for the desired employee's info and appends that persons data to the modal
 function constructModalWindow(data){
     for(let i = 0; i < data.length; i++){
-    const modal = `<div class="modal-container">
+        // console.log(e.target.name)
+        const modal = `<div class="modal-container">
             <div class="modal">
                 <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
                 <div class="modal-info-container">
@@ -47,21 +47,29 @@ function constructModalWindow(data){
                     <p class="modal-text">${data[i].location.address}</p>
                     <p class="modal-text">Birthday: ${data[i].birthday}</p>
                 </div>
-            </div>
-
+            </div>`
+        gallerySection.insertAdjacentHTML('beforeend', modal)
             // IMPORTANT: Below is only for exceeds tasks 
-            <div class="modal-btn-container">
-                <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-                <button type="button" id="modal-next" class="modal-next btn">Next</button>
-            </div>
-        </div>`
-    body.insertAdjacentHTML('beforeend', modal);
+        //     <div class="modal-btn-container">
+        //         <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+        //         <button type="button" id="modal-next" class="modal-next btn">Next</button>
+        //     </div>
+        // </div>
+        const modalCard = document.querySelectorAll('.modal')
+        const modalContainer = document.querySelectorAll('.modal-container')
+        const modalClose = document.querySelectorAll('.modal-close-btn')
+        modalClose[i].addEventListener('click', () => {
+            for(let i = 0; i < data.length; i++){
+            modalContainer[i].removeChild(modalCard[i])
+            gallerySection.removeChild(modalContainer[i])
+            }
+        })
     }
 }
 
+
+
 fetchData(resultsUrl)
-.then(res => {
-    constructCard(res, constructModalWindow)
-    return res;
-})
+.then(res => constructCard(res))
+
 .catch(err => console.log(err))
