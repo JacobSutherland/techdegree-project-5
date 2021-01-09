@@ -1,14 +1,17 @@
-const searchContainer = document.querySelector('.search-container');
+const searchBtn = document.querySelector('.search-submit');
+const searchField = document.querySelector('.search-input');
 const gallerySection = document.querySelector('.gallery');
 const body = document.querySelector('body');
 const userUrl = 'https://randomuser.me/api/?results=12&nat=us';
 
+//requests data from specified URL, parses it to JSON, and returns it in the form of a promise
 async function fetchData(url){
     let response = await fetch(url);
     let data = response.json();
     return data;
 }
- 
+
+//accepts data to constructs the html for employee cards to populate the page and a callback to pass the data and the index of the clicked user card
 async function constrsuctUserCard(data, cb){
     for(let i = 0; i < data.results.length; i++){
         const currentDataIndex = data.results[i];
@@ -26,6 +29,7 @@ async function constrsuctUserCard(data, cb){
         const userCard = userCardHTML;
         gallerySection.insertAdjacentHTML('beforeend', userCard);
         const card = document.querySelectorAll('.card');
+        //a card is clicked, it's index value is saved to be referenced later, amd constructModal is called, accepting said current index and data
         card[i].addEventListener('click', () => {
             const currentIndex = i;
             cb(data, currentIndex); 
@@ -33,7 +37,9 @@ async function constrsuctUserCard(data, cb){
     }
 }
 
-async function constructUserModal(employee, currentIndex){
+//accepts data to construct the modal card and an index value representing the user card that was clicked
+function constructUserModal(employee, currentIndex){
+    //variables hoisted to allow access to scope
     let modalContainer;
     let numberOfEmployees;
     for(let i = 0; i < employee.results.length; i++){
@@ -49,7 +55,7 @@ async function constructUserModal(employee, currentIndex){
                     <p class="modal-text cap">${currentEmployeeIndex.location.city}</p>
                     <hr>
                     <p class="modal-text">${currentEmployeeIndex.phone}</p>
-                    <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
+                    <p class="modal-text">${currentEmployeeIndex.location.street.number} ${currentEmployeeIndex.location.street.name}, ${currentEmployeeIndex.location.city} ${currentEmployeeIndex.location.state}, ${currentEmployeeIndex.location.postcode}</p>
                     <p class="modal-text">Birthday: ${currentEmployeeIndex.dob.date}</p>
                 <div class="modal-btn-container">
                     <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
@@ -62,35 +68,42 @@ async function constructUserModal(employee, currentIndex){
             body.insertAdjacentHTML('beforeend', userModal);
             const exitModal = document.querySelectorAll('.modal-close-btn')
             modalContainer = document.querySelectorAll('.modal-container')
-            const modal = document.querySelectorAll('.modal')
             const card = document.querySelectorAll('.card')
             const modalPrevBtn = document.querySelectorAll('.modal-prev')
             const modalNextBtn = document.querySelectorAll('.modal-next')
             numberOfEmployees = card.length;
 
+            //hides all modal cards initially
             modalContainer[i].style.display = 'none';
 
+            //adds event listener & 'X' icon click removes all instabces of modals
             exitModal[i].addEventListener('click', () => {
                 modalContainer.forEach( i => {
                     body.removeChild(i);
                 })
              })
 
+             //adds event listeners to previous buttons and uses the index value to change display values on previous modalContainer Elements relative to the current iteration's value
             modalPrevBtn[i].addEventListener('click', () => {
                 let previous = i;
-                previous--;
-                modalContainer[previous].style.display = 'block';
-                modalContainer[i].style.display = 'none';
+                if(previous > 0){
+                    previous--;
+                    modalContainer[previous].style.display = 'block';
+                    modalContainer[i].style.display = 'none';
+                }
             });         
 
+            //adds event listeners to next buttons  and uses the index value to change display values on following modalContainer Elements relative to the current iteration's value
             modalNextBtn[i].addEventListener('click', () => {
                 let next = i;
-                next++;
-                console.log(next)
-                modalContainer[next].style.display = 'block';
-                modalContainer[i].style.display = 'none';
+                if(next < numberOfEmployees - 1){
+                    next++;
+                    modalContainer[next].style.display = 'block';
+                    modalContainer[i].style.display = 'none';
+                }
             })
         }
+        //loops the length of data results and checks whether or not the current itteration is equal to the clicked card, finally hiding modals not matching clicked card's index, and showing the one that does
         for(let j = 0; j < numberOfEmployees; j++){
             if(j !== currentIndex){
                 modalContainer[j].style.display = 'none';
@@ -103,7 +116,12 @@ async function constructUserModal(employee, currentIndex){
 
 fetchData(userUrl)
 .then( res => {
-    constrsuctUserCard(res, constructUserModal) 
+    constrsuctUserCard(res, constructUserModal)
     return res;
 })
-.then( res => console.log(res) )
+.then( res => listActiveEmployees(res))
+.then(res => {
+    searchEmployees(res)
+    return res;
+})
+.catch(err => Error(err))
