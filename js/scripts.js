@@ -1,5 +1,3 @@
-const searchBtn = document.querySelector('.search-submit');
-const searchField = document.querySelector('.search-input');
 const gallerySection = document.querySelector('.gallery');
 const body = document.querySelector('body');
 const userUrl = 'https://randomuser.me/api/?results=12&nat=us';

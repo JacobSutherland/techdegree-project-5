@@ -1,5 +1,15 @@
 // -------------- Search Functionality -------------- //
 
+document.querySelector(".search-container").innerHTML = `
+    <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>
+`;
+
+const searchBtn = document.querySelector('.search-submit');
+const searchField = document.querySelector('.search-input');
+
 //accepts data and reformats it into an array containing only the first and last name results
 function listActiveEmployees(data){
     const activeEmployees = data.results.map( i => {
@@ -14,7 +24,7 @@ function searchEmployees(employees){
     const card = document.querySelectorAll('.card')
 
     searchBtn.addEventListener('click', () => {
-        let results = 0;
+        let nonMatches = 0;
         const userInput = searchField.value.toLowerCase();
         const firstInputLetter = userInput[0]
         const filteredNames = employees.filter( i => {
@@ -31,14 +41,14 @@ function searchEmployees(employees){
                     card[i].style.display = 'block'
                     } else {
                         card[i].style.display = 'none'
-                        results += 1;
+                        nonMatches += 1;
                     }
                     //creates a message to tell user that no results were returned from a search
                     const messageContainer = document.createElement('div');
                     const message = document.createElement('p');
                     message.textContent = 'No Results'
                     messageContainer.appendChild(message);
-                    if(results > gallerySection.children.length - 1 && body.contains(messageContainer) === false){
+                    if(nonMatches > gallerySection.children.length - 1 && body.contains(messageContainer) === false){
                     body.appendChild(messageContainer);
                     } 
                     //removes the message when a new search is made
