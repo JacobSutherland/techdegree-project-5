@@ -6,13 +6,17 @@ const userUrl = 'https://randomuser.me/api/?results=12&nat=us';
 
 //requests data from specified URL, parses it to JSON, and returns it in the form of a promise
 async function fetchData(url){
-    let response = await fetch(url);
-    let data = response.json();
-    return data;
+    try{
+        let response = await fetch(url);
+        let data = response.json();
+        return data;
+    } catch(err){
+        console.log(err)
+    }
 }
 
 //accepts data to constructs the html for employee cards to populate the page and a callback to pass the data and the index of the clicked user card
-async function constrsuctUserCard(data, cb){
+function constrsuctUserCard(data, cb){
     for(let i = 0; i < data.results.length; i++){
         const currentDataIndex = data.results[i];
         const userCardHTML =
