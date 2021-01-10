@@ -15,7 +15,7 @@ function searchEmployees(employees){
 
     searchBtn.addEventListener('click', () => {
         let results = 0;
-        const userInput = searchField.value;
+        const userInput = searchField.value.toLowerCase();
         const firstInputLetter = userInput[0]
         const filteredNames = employees.filter( i => {
             return i.includes(userInput);
