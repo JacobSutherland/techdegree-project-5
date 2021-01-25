@@ -59,7 +59,9 @@ function searchEmployees(employees){
     //empties search text field and displays all results when field is emptied
     searchField.addEventListener('change', () => {
         if(searchField.value === ''){
-            body.removeChild(messageContainer)
+            if(body.contains(messageContainer)){
+                body.removeChild(messageContainer)
+            }
             for(let i = 0; i < gallerySection.children.length; i++){
                 card[i].style.display = 'flex';
             }
