@@ -58,7 +58,7 @@ function constructUserModal(employee, currentIndex){
                     <hr>
                     <p class="modal-text">${currentEmployeeIndex.phone}</p>
                     <p class="modal-text">${currentEmployeeIndex.location.street.number} ${currentEmployeeIndex.location.street.name}, ${currentEmployeeIndex.location.city} ${currentEmployeeIndex.location.state}, ${currentEmployeeIndex.location.postcode}</p>
-                    <p class="modal-text">Birthday: ${currentEmployeeIndex.dob.date}</p>
+                    <p class="modal-text">Birthday: ${currentEmployeeIndex.dob.date.slice(0,10)}</p>
                 <div class="modal-btn-container">
                     <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
                     <button type="button" id="modal-next" class="modal-next btn">Next</button>
